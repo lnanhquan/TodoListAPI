@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj": {}
+    "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj": {}
   },
   "projects": {
-    "C:\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj": {
+    "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj",
         "projectName": "TodoListAPI",
-        "projectPath": "C:\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\TodoListAPI\\TodoListAPI\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.10, )"

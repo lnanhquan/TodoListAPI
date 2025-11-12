@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-do List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">To-do List</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="container">
+                <div class="row pt-4 pb-3">
+                    <div class="text-end">
+                        <a role="button" asp-controller="ToDoItem" asp-action="Upsert" class="btn-primary btn p-2"><i class="bi bi-plus-circle"></i> Create new item</a>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped shadow-lg">
+                    <thead class="text-center align-middle">
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="todo-table" class="text-center align-middle">
+                        <tr>
+                            <td colspan="3">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-center">
+            &copy; 2025 - Lê Ngọc Anh Quân
+        </div>
+    </footer>
+
+    <script>
+        const todoList = document.getElementById("todo-table");
+
+        async function getList() {
+            try {
+                const response = await fetch("https://localhost:7181/api/ToDoItem");
+                if (!response.ok) throw new Error("Failed to fetch items");
+                const list = await response.json();
+
+                todoList.innerHTML = "";
+
+                if (list.length === 0) 
+                {
+                    todoList.innerHTML = '<tr><td colspan="3">No items found</td></tr>';
+                } 
+                else 
+                {
+                    list.forEach(item =>{
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${item.title}</td>
+                            <td>${item.isDone ? 'Done' : 'Pending'}</td>`;
+                        todoList.appendChild(tr);
+                    });
+                }
+            } 
+            catch (error) 
+            {
+                todoList.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
+                console.error(error);
+            }
+        }
+
+        getList();
+    </script>
+</body>
+</html>
+
+
