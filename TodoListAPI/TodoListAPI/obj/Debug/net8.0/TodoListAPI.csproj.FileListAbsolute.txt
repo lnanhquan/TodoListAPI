@@ -573,3 +573,5 @@ C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\obj\Debug\ne
 C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\obj\Debug\net8.0\TodoListAPI.pdb
 C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\obj\Debug\net8.0\TodoListAPI.genruntimeconfig.cache
 C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\obj\Debug\net8.0\ref\TodoListAPI.dll
+C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Admin\Documents\GitHub\TodoListAPI\TodoListAPI\TodoListAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
