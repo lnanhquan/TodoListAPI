@@ -8,14 +8,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "model",
+        "Type": "TodoListAPI.Models.LoginUser",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -29,14 +24,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "model",
+        "Type": "TodoListAPI.Models.RegisterUser",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

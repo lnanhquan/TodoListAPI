@@ -9,6 +9,32 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1; 
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,12 +46,9 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>
+                <div class="d-flex">
+                    <button id="btnLogin" class="btn btn-outline-primary me-2" onclick="openLoginModal()">Login</button>
+                    <button id="btnLogout" class="btn btn-outline-danger d-none" onclick="logout()">Logout</button>
                 </div>
             </div>
         </nav>
@@ -33,11 +56,10 @@
 
     <div class="container">
         <main role="main" class="pb-3">
-            
             <div class="container">
                 <div class="row pt-4 pb-3">
                     <div class="text-end">
-                        <a role="button" id="btnCreate" class="btn-primary btn p-2"  onclick="openCreateModal()"><i class="bi bi-plus-circle"></i> Create new item</a>
+                        <a role="button" id="btnCreate" class="btn-primary btn p-2 d-none"  onclick="openCreateModal()"><i class="bi bi-plus-circle"></i> Create new item</a>
                     </div>
                 </div>
                 <table class="table table-bordered table-striped shadow-lg">
@@ -50,7 +72,7 @@
                     </thead>
                     <tbody id="todo-table" class="text-center align-middle">
                         <tr>
-                            <td colspan="3">Loading...</td>
+                            <td colspan="3">Please log in to view your list</td>
                         </tr>
                     </tbody>
                 </table>
@@ -64,6 +86,7 @@
         </div>
     </footer>
 
+    <!-- Pop up thêm và sửa -->
     <div class="modal fade" id="todoModal" tabindex="-1" aria-labelledby="todoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content shadow-lg rounded-3">
@@ -73,13 +96,13 @@
             </div>
             <div class="modal-body">
                 <form id="todoForm">
-                <input type="hidden" id="todoId">
+                <input type="hidden" id="todoId"></input>
                 <div class="mb-3">
                     <label for="todoTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="todoTitle" required>
+                    <input type="text" class="form-control" id="todoTitle" required></input>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="todoDone">
+                    <input class="form-check-input" type="checkbox" id="todoDone"></input>
                     <label class="form-check-label" for="todoDone">Mark as done</label>
                 </div>
                 </form>
@@ -92,145 +115,46 @@
         </div>
     </div>
 
-    <script>
-        const todoList = document.getElementById("todo-table");
-        const todoModal = new bootstrap.Modal(document.getElementById("todoModal"));
-        const todoTitle = document.getElementById("todoTitle");
-        const todoDone = document.getElementById("todoDone");
-        const todoId = document.getElementById("todoId");
-        const saveTodoBtn = document.getElementById("saveTodoBtn");
-        let isEditing = false;
+    <!-- Pop up login -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h2 class="modal-title">Login</h2>
+            </div>
+            <div class="modal-body">
+                <input type="email" id="loginEmail" class="form-control mb-2" placeholder="Email"></input>
+                <input type="password" id="loginPassword" class="form-control mb-2" placeholder="Password">
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-primary me-2" onclick="login()">Login</button>
+                <button class="btn btn-success" onclick="switchToRegister()">Register</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
-        function openCreateModal() {
-            isEditing = false;
-            document.getElementById("todoModalLabel").textContent = "Create new item";
-            todoTitle.value = "";
-            todoDone.checked = false;
-            todoId.value = "";
-            todoModal.show();
-        }
+    <!-- Pop up register -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h2 class="modal-title">Register</h2>
+            </div>
+            <div class="modal-body">
+                <input type="email" id="registerEmail" class="form-control mb-2" placeholder="Email">
+                <input type="password" id="registerPassword" class="form-control mb-2" placeholder="Password">
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-success me-2" onclick="register()">Register</button>
+                <button class="btn btn-secondary" onclick="switchToLogin()">Back to Login</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
-        function openEditModal(id, title, isDone) {
-            isEditing = true;
-            document.getElementById("todoModalLabel").textContent = "Edit item";
-            todoTitle.value = title;
-            todoDone.checked = isDone;
-            todoId.value = id;
-            todoModal.show();
-        }
-
-        async function deleteItem(id) {
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            });
-            if (result.isConfirmed)
-            {
-                try {
-                    await axios.delete(`https://localhost:7181/api/ToDoItem/${id}`);
-                    Swal.fire(
-                        'Deleted!',
-                        'Your item has been deleted.',
-                        'success'
-                    );
-                    getList();
-                } catch (error) {
-                    Swal.fire(
-                        'Failed!',
-                        'Could not delete item.',
-                        'error'
-                    );
-                    console.error(error);
-                }
-            }
-
-        }
-
-        saveTodoBtn.addEventListener("click", async () => {
-            const title = todoTitle.value.trim();
-            if (title === "") {
-                alert("Title cannot be empty!");
-                return;
-            }
-
-            const data = {
-                title: title,
-                isDone: todoDone.checked
-            };
-
-            try {
-                if (isEditing) {
-                    const id = todoId.value;
-                    await axios.put(`https://localhost:7181/api/ToDoItem/${id}`, { id, ...data });
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Updated!',
-                        text: 'Item updated successfully'
-                    });
-                } else {
-                    await axios.post("https://localhost:7181/api/ToDoItem", data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Created!',
-                        text: 'Item created successfully'
-                    });
-                }
-                todoModal.hide();
-                getList();
-            } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Operation failed!'
-                    });
-                console.error(error);
-            }
-        });
-
-        async function getList() {
-            try {
-                const response = await axios.get("https://localhost:7181/api/ToDoItem");
-                const list = response.data;
-
-                todoList.innerHTML = "";
-
-                if (list.length === 0) 
-                {
-                    todoList.innerHTML = '<tr><td colspan="3">No items found</td></tr>';
-                } 
-                else 
-                {
-                    list.forEach(item =>{
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                            <td>${item.title}</td>
-                            <td>${item.isDone ? 'Done' : 'Pending'}</td>
-                            <td>
-                                <button class="btn btn-success" onclick="openEditModal(${item.id}, '${item.title}', ${item.isDone})">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </button>
-                                <button class="btn btn-danger" onclick="deleteItem(${item.id})">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </td>`;
-                        todoList.appendChild(tr);
-                    });
-                }
-            } 
-            catch (error) 
-            {
-                todoList.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
-                console.error(error);
-            }
-        }
-
-        getList();
-    </script>
+    <script src="TodoCRUD.js"></script>
+    <script src="Auth.js"></script>
 </body>
 </html>
 

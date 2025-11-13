@@ -25,20 +25,20 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(string email, string password)
+        public async Task<IActionResult> Register([FromBody] RegisterUser model)
         {
-            var existingUser = await _userManager.FindByEmailAsync(email);
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
                 return BadRequest("Email already exists");
 
             var user = new User
             {
-                UserName = email,
-                Email = email,
+                UserName = model.Email,
+                Email = model.Email,
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -47,13 +47,13 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] LoginUser model)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
                 return Unauthorized("Invalid email or password");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded)
                 return Unauthorized("Invalid email or password");
 
