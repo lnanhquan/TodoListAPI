@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Events;
 using System.Security.Claims;
 using System.Text;
 using TodoListAPI.Data;
@@ -82,6 +85,19 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("System", LogEventLevel.Warning)
+    .WriteTo.Console()
+    .WriteTo.File(
+        "logs/log.txt",
+         rollingInterval: RollingInterval.Day,
+         restrictedToMinimumLevel: LogEventLevel.Debug)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 
 var app = builder.Build();
 

@@ -9,10 +9,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D6DD29C5-F2EC-4DA9-B000-ABFCCD1D1E26}|TodoListAPI\\TodoListAPI.csproj|c:\\users\\admin\\documents\\github\\todolistapi\\todolistapi\\todolistapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D6DD29C5-F2EC-4DA9-B000-ABFCCD1D1E26}|TodoListAPI\\TodoListAPI.csproj|solutionrelative:todolistapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D6DD29C5-F2EC-4DA9-B000-ABFCCD1D1E26}|TodoListAPI\\TodoListAPI.csproj|c:\\users\\admin\\documents\\github\\todolistapi\\todolistapi\\todolistapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D6DD29C5-F2EC-4DA9-B000-ABFCCD1D1E26}|TodoListAPI\\TodoListAPI.csproj|solutionrelative:todolistapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,16 +26,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Program.cs",
-              "RelativeDocumentMoniker": "TodoListAPI\\Program.cs",
-              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Program.cs",
-              "RelativeToolTip": "TodoListAPI\\Program.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAADwv08AAAAnAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "TodoListAPI\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "TodoListAPI\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHMAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-13T07:36:17.853Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T03:19:27.202Z"
             },
             {
               "$type": "Document",
@@ -49,22 +44,9 @@
               "RelativeDocumentMoniker": "TodoListAPI\\Controllers\\ToDoItemController.cs",
               "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Controllers\\ToDoItemController.cs",
               "RelativeToolTip": "TodoListAPI\\Controllers\\ToDoItemController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEwAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-13T07:32:31.951Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "TodoListAPI\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\TodoListAPI\\TodoListAPI\\TodoListAPI\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "TodoListAPI\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAgwDgAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-13T02:47:57.603Z",
+              "WhenOpened": "2025-11-14T02:57:05.143Z",
               "EditorCaption": ""
             }
           ]

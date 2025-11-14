@@ -44,15 +44,8 @@ namespace TodoListAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            try
-            {
-                var createdItem = _service.Add(item);
-                return CreatedAtAction(nameof(GetById), new { id = createdItem.id }, createdItem);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error: " + ex.Message);
-            }
+            var createdItem = _service.Add(item);
+            return CreatedAtAction(nameof(GetById), new { id = createdItem.id }, createdItem);
         }
 
         [HttpPut("{id}")]
@@ -65,31 +58,16 @@ namespace TodoListAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                var updateItem = _service.Update(id, item);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error: " + ex.Message);
-            }
+            var updateItem = _service.Update(id, item);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
-            try
-            {
                 var deleted = _service.Delete(id);
                 return deleted ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error: " + ex.Message);
-            }
         }
-
     }
 }

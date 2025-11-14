@@ -1,4 +1,5 @@
-﻿using TodoListAPI.Models;
+﻿using Serilog;
+using TodoListAPI.Models;
 using TodoListAPI.Repository;
 
 namespace TodoListAPI.Services
@@ -13,44 +14,84 @@ namespace TodoListAPI.Services
 
         public ToDoItem Add(ToDoItem item)
         {
-            if (string.IsNullOrWhiteSpace(item.title))
-                throw new ArgumentException("Title is empty!");
-            _repo.Add(item);
-            return item;
+            try
+            {
+                if (string.IsNullOrWhiteSpace(item.title))
+                    throw new ArgumentException("Title is empty!");
+                _repo.Add(item);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("{ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
 
         public bool Delete(int id)
         {
-            var item = _repo.GetById(id);
-            if (item == null)
+            try
             {
-                return false;
+                var item = _repo.GetById(id);
+                if (item == null)
+                {
+                    return false;
+                }
+                _repo.Delete(item);
+                return true;
             }
-            _repo.Delete(item);
-            return true;
+            catch (Exception ex)
+            {
+                Log.Error("{ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
 
         public IEnumerable<ToDoItem> GetAll()
         {
-            return _repo.GetAll();
+            try
+            {
+                return _repo.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("{ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
 
         public ToDoItem? GetById(int id)
         {
-            return _repo.GetById(id);
+            try
+            {
+                return _repo.GetById(id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("{ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
 
         public bool Update(int id, ToDoItem item)
         {
-            var existingItem = _repo.GetById(id);
-            if (existingItem == null)
+            try
             {
-                return false;
+                var existingItem = _repo.GetById(id);
+                if (existingItem == null)
+                {
+                    return false;
+                }
+                existingItem.title = item.title;
+                existingItem.isDone = item.isDone;
+                _repo.Update(existingItem);
+                return true;
             }
-            existingItem.title = item.title;
-            existingItem.isDone = item.isDone;
-            _repo.Update(existingItem);
-            return true;
+            catch (Exception ex)
+            {
+                Log.Error("{ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
+                throw;
+            }
         }
     }
 }

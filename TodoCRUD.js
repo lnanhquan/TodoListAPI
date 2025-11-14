@@ -1,4 +1,4 @@
-const token = localStorage.getItem("token");
+let token = localStorage.getItem("token");
 const todoList = document.getElementById("todo-table");
 const todoModal = new bootstrap.Modal(document.getElementById("todoModal"));
 const todoTitle = document.getElementById("todoTitle");

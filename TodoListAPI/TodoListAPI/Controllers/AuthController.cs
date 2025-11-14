@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -27,69 +28,101 @@ namespace TodoListAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUser model)
         {
-            var existingUser = await _userManager.FindByEmailAsync(model.Email);
-            if (existingUser != null)
-                return BadRequest("Email already exists");
-
-            var user = new User
+            try
             {
-                UserName = model.Email,
-                Email = model.Email,
-                EmailConfirmed = true
-            };
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    Log.Warning("Registration failed: {Email} already exists", model.Email);
+                    return BadRequest("Email already exists");
+                }
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    EmailConfirmed = true
+                };
 
-            await _userManager.AddToRoleAsync(user, "User");
-            return Ok("User registered successfully");
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                {
+                    Log.Warning("Registration failed for {Email}: {Errors}", model.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+                    return BadRequest(result.Errors);
+                }
+
+                await _userManager.AddToRoleAsync(user, "User");
+                Log.Information("User registered successfully: {Email}", model.Email);
+                return Ok("User registered successfully");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred during registration for {Email}", model.Email);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during registration");
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUser model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
-                return Unauthorized("Invalid email or password");
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-            if (!result.Succeeded)
-                return Unauthorized("Invalid email or password");
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
-
-            var claims = new List<Claim>
+            try
             {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
-            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    Log.Warning("Login failed: {Email} not found", model.Email);
+                    return Unauthorized("Invalid email");
+                }
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+                if (!result.Succeeded)
+                {
+                    Log.Warning("Login failed for {Email}: Invalid password", model.Email);
+                    return Unauthorized("Invalid password");
+                }    
+                    
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+                claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:ExpireMinutes"])),
+                    Issuer = _config["Jwt:Issuer"],
+                    Audience = _config["Jwt:Audience"],
+                    SigningCredentials = new SigningCredentials(
+                        new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha256Signature
+                    )
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwt = tokenHandler.WriteToken(token);
+
+                Log.Information("User logged in successfully: {Email}", model.Email);
+
+                return Ok(new
+                {
+                    token = jwt,
+                    expiration = token.ValidTo,
+                    roles
+                });
+            }
+            catch (Exception ex)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:ExpireMinutes"])),
-                Issuer = _config["Jwt:Issuer"],
-                Audience = _config["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature
-                )
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(token);
-
-            return Ok(new
-            {
-                token = jwt,
-                expiration = token.ValidTo,
-                roles
-            });
+                Log.Error(ex, "An error occurred during login for {Email}", model.Email);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during login");
+            }
         }
     }
 }
