@@ -11,6 +11,7 @@ namespace TodoListAPI.Models
         public int id { get; set; }
 
         [Required]
+        [MaxLength(50)]
         [Display(Name = "Title")]
         public string title { get; set; }
 

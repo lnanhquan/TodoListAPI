@@ -10,13 +10,15 @@ let isEditing = false;
 function updateCRUDUI() {
     const roles = JSON.parse(localStorage.getItem("roles")) || [];
     const btnCreate = document.getElementById("btnCreate");
-
+    const ths = document.querySelectorAll("table thead th");
     if (roles.includes("Admin")) 
     {
         btnCreate.classList.remove("d-none");
+        ths[2].classList.remove("d-none");
     }
     else {
         btnCreate.classList.add("d-none");
+        ths[2].classList.add("d-none");
     }
 
     document.querySelectorAll("#todo-table .btn-success, #todo-table .btn-danger").forEach(btn => 
@@ -32,7 +34,9 @@ function updateCRUDUI() {
 function openCreateModal() {
     isEditing = false;
     document.getElementById("todoModalLabel").textContent = "Create new item";
-    todoTitle.value = "";
+    const btn = document.getElementById("saveTodoBtn");
+    btn.textContent = "Create"
+    btn.classList.add("btn-primary")
     todoDone.checked = false;
     todoId.value = "";
     todoModal.show();
@@ -41,6 +45,9 @@ function openCreateModal() {
 function openEditModal(id, title, isDone) {
     isEditing = true;
     document.getElementById("todoModalLabel").textContent = "Edit item";
+    const btn = document.getElementById("saveTodoBtn");
+    btn.textContent = "Edit"
+    btn.classList.add("btn-success")
     todoTitle.value = title;
     todoDone.checked = isDone;
     todoId.value = id;
@@ -69,20 +76,31 @@ async function deleteItem(id) {
                     headers: { Authorization: `Bearer ${token}`}
                 }
             );
-            Swal.fire(
-                'Deleted!',
-                'Your item has been deleted.',
-                'success'
-            );
+            Swal.fire({
+                icon: "success",
+                title: "Your item has been deleted!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+            });
             getList();
-        } catch (error) {
-            Swal.fire(
-                'Failed!',
-                'Could not delete item.',
-                'error'
-            );
+        } 
+        catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Could not delete item!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+            });            
             console.error(error);
-        } finally {
+        } 
+        finally 
+        {
             deleteBtn.disabled = false;
         }
     }
@@ -92,7 +110,12 @@ async function deleteItem(id) {
 saveTodoBtn.addEventListener("click", async () => {
     const title = todoTitle.value.trim();
     if (title === "") {
-        alert("Title cannot be empty!");
+        Swal.fire("Title cannot be empty!");
+        return;
+    }
+    else if (title.length > 50)
+    {
+        Swal.fire("Title exceeds max length 50!");
         return;
     }
 
@@ -114,9 +137,13 @@ saveTodoBtn.addEventListener("click", async () => {
                 }
             );
             Swal.fire({
-                icon: 'success',
-                title: 'Updated!',
-                text: 'Item updated successfully'
+                icon: "success",
+                title: "Item updated successfully!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
             });
         } else {
             await axios.post(
@@ -127,18 +154,26 @@ saveTodoBtn.addEventListener("click", async () => {
                 }
             );
             Swal.fire({
-                icon: 'success',
-                title: 'Created!',
-                text: 'Item created successfully'
+                icon: "success",
+                title: "Item created successfully!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
             });
         }
         todoModal.hide();
         getList();
     } catch (error) {
             Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Operation failed!'
+                icon: "error",
+                title: "Operation failed!",
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
             });
         console.error(error);
     } finally {
@@ -148,6 +183,7 @@ saveTodoBtn.addEventListener("click", async () => {
 
 async function getList() {
     try {
+        token = localStorage.getItem("token");
         const response = await axios.get(
             "https://localhost:7181/api/ToDoItem",
             {

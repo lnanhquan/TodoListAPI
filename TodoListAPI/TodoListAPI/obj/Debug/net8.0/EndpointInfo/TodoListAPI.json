@@ -295,6 +295,7 @@
             "format": "int32"
           },
           "title": {
+            "maxLength": 50,
             "minLength": 1,
             "type": "string"
           },
